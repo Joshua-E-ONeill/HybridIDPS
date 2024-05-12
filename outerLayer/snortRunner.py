@@ -141,6 +141,7 @@ def check_file_changes(file_path, file_Check_Interval, displayAlerts, mySqlConne
                     print(f"File contents changed in {file_path}. New contents:")
                 with open(file_path, 'r') as file:
                     fileData = file.read()
+                    print(fileData[:-7])
                     newSnortAlerts, read_Up_To = handle_Snort_Alerts(displayAlerts, fileData, read_Up_To) #Reads only the updating part of the file. 
                     #Sending Data to server
                     if displayAlerts:
@@ -221,7 +222,6 @@ def handle_Snort_Alerts(displayAlerts, fileData, read_Up_To):
                 if alertName == "Outgoing TCP Traffic" or alertName == "Outgoing UDP Traffic" or alertName == "Outgoing ICMP Ping" or alertName == "Possible Phishing" or alertName == "WebSocket Connection":
                     # Swap src_ip and dest_ip
                     src_ip, dest_ip = dest_ip, src_ip
-                
               
                 isoDateTime = dateTime_to_ISO(dateTime)
 
@@ -239,7 +239,6 @@ def handle_Snort_Alerts(displayAlerts, fileData, read_Up_To):
                     dest_port = dest_ip[index+1:]
                     dest_ip = dest_ip[:index]
 
-
                 # dataLine = {'src_ip': src_ip, 'dest_ip': dest_ip, 'dateTime': dateTime, 'alertId': alertId, 'alertName' : alertName}
                 # ip_address, geolocation, event_type, threat_level, dateTime
 
@@ -256,8 +255,8 @@ def handle_Snort_Alerts(displayAlerts, fileData, read_Up_To):
                 print(f"Error at handle_Snort_Alerts {E} with string {alertLine} and entry \n {entry}")
                 traceback.print_exc()
                 time.sleep(10)
-                
-    read_Up_To += len(entries)-1
+
+    read_Up_To += len(entries) - 1
 
     return newSnortAlerts, read_Up_To
 
